@@ -28,13 +28,13 @@ class Salle
     #[ORM\Column]
     private ?int $capaciteSalle = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
+    #[ORM\Column(type: Types::FLOAT, precision: 10, scale: '0')]
     private ?string $longitude = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
+    #[ORM\Column(type: Types::FLOAT, precision: 10, scale: '0')]
     private ?string $latitude = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
+    #[ORM\Column(type: Types::FLOAT, precision: 10, scale: '0')]
     private ?string $altitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'salles')]
@@ -43,7 +43,7 @@ class Salle
     #[ORM\OneToMany(mappedBy: 'sale', targetEntity: Reservation::class)]
     private Collection $reservations;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $src = null;
 
     public function __construct()
@@ -104,31 +104,31 @@ class Salle
         return $this;
     }
 
-    public function getLongitude(): ?string
+    public function getLongitude(): ?float
     {
         return $this->longitude;
     }
 
-    public function setLongitude(string $longitude): self
+    public function setLongitude(float $longitude): self
     {
         $this->longitude = $longitude;
 
         return $this;
     }
 
-    public function getLatitude(): ?string
+    public function getLatitude(): ?float
     {
         return $this->latitude;
     }
 
-    public function setLatitude(string $latitude): self
+    public function setLatitude(float $latitude): self
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getAltitude(): ?string
+    public function getAltitude(): ?float
     {
         return $this->altitude;
     }

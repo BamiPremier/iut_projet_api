@@ -64,8 +64,6 @@ class ActionController extends AbstractController
     public function saleAdd(Request $request, SluggerInterface $slugger)
     {
 
-        $data
-            =        $data = $request->toArray();
 
 
         if (empty($request->get('idBatiment')) || empty($request->get('nom')) || empty($request->get('numero')) || empty($request->get('capacite')) || empty($request->get('longitude')) || empty($request->get('latitude'))) {
@@ -150,6 +148,51 @@ class ActionController extends AbstractController
                 'id' => $sale->getId(),
                 'nomSalle' => $sale->getNomSalle(),
                 'numeroSalle' => $sale->getNumeroSalle(),
+
+                'capaciteSalle' =>  $sale->getCapaciteSalle(),
+                'longitude' =>  $sale->getLongitude(),
+                'latitude' =>  $sale->getLatitude(),
+                'src' =>  'http' . '://' . $_SERVER['HTTP_HOST'] . '/images/salle/' . ($sale->getSrc() ?? 'default.jpg'),
+
+
+            ];
+            array_push($lsale, $saleU);
+        }
+        return new JsonResponse([
+            'data' =>
+            $lsale
+
+        ], 200);
+    }
+    /**
+     * @Route("/sales/default", name="saleReadD", methods={"GET"})
+     *  @param Request $request
+     * @return JsonResponse
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \Exception
+     * 
+     */
+    public function saleReadD(Request $request,)
+    {
+
+
+        $lsale = [];
+
+        $lsaleCollections = $this->em->getRepository(Salle::class)->findAll();
+
+        foreach ($lsaleCollections as $sale) {
+
+
+
+            $saleU =  [
+                'id' => $sale->getId(),
+                'nomSalle' => $sale->getNomSalle(),
+                'numeroSalle' => $sale->getNumeroSalle(),
+                'etat' => $sale->isEtatSalle(),
 
                 'capaciteSalle' =>  $sale->getCapaciteSalle(),
                 'longitude' =>  $sale->getLongitude(),
