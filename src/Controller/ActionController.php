@@ -79,6 +79,7 @@ class ActionController extends AbstractController
         $capacite = $request->get('capacite');
         $longitude = $request->get('longitude');
         $latitude = $request->get('latitude');
+        $niveauSalle = $request->get('niveauSalle');
         $idBatiment = $request->get('idBatiment');
 
         $Batiment = $this->em->getRepository(Batiment::class)->findOneBy(['id' => $idBatiment]);
@@ -95,6 +96,7 @@ class ActionController extends AbstractController
         $sale->setCapaciteSalle($capacite);
         $sale->setLongitude($longitude);
         $sale->setLatitude($latitude);
+        $sale->setNiveauSalle($niveauSalle);
         $sale->setAltitude($latitude);
         $sale->setBatiment($Batiment);
         $file =  $request->files->get('file');
@@ -148,7 +150,8 @@ class ActionController extends AbstractController
                 'id' => $sale->getId(),
                 'nomSalle' => $sale->getNomSalle(),
                 'numeroSalle' => $sale->getNumeroSalle(),
-
+                'niveauSalle' => $sale->getNiveauSalle(),
+                'batiment' => $sale->getBatiment()->getNomBatiment(),
                 'capaciteSalle' =>  $sale->getCapaciteSalle(),
                 'longitude' =>  $sale->getLongitude(),
                 'latitude' =>  $sale->getLatitude(),
@@ -193,12 +196,12 @@ class ActionController extends AbstractController
                 'nomSalle' => $sale->getNomSalle(),
                 'numeroSalle' => $sale->getNumeroSalle(),
                 'etat' => $sale->isEtatSalle(),
-
-                'capaciteSalle' =>  $sale->getCapaciteSalle(),
+                'niveauSalle' => $sale->getNiveauSalle(),
+                'capaciteSalle' =>  $sale->getCapaciteSalle(),   'batiment' => $sale->getBatiment()->getNomBatiment(),
                 'longitude' =>  $sale->getLongitude(),
                 'latitude' =>  $sale->getLatitude(),
                 'src' =>  'http' . '://' . $_SERVER['HTTP_HOST'] . '/images/salle/' . ($sale->getSrc() ?? 'default.jpg'),
-
+                //addsd
 
             ];
             array_push($lsale, $saleU);
@@ -284,6 +287,9 @@ class ActionController extends AbstractController
         $idUser = $data['idUser'];
 
         $idSalle = $data['idSalle'];
+        $motif = $data['motif'];
+        $debut = $data['debut'];
+        $fin = $data['fin'];
         $user = $this->em->getRepository(UserPlateform::class)->findOneBy(['id' => $idUser]);
 
 
@@ -294,6 +300,10 @@ class ActionController extends AbstractController
 
             $reservation->setUtilisateur($user);
             $reservation->setSale($sale);
+            $reservation->setSale($sale);
+            $reservation->setMotif($motif);
+            $reservation->setDebut($debut);
+            $reservation->setFin($fin);
             $sale->setEtatSalle(true);
 
             $this->em->persist($sale);
@@ -346,8 +356,11 @@ class ActionController extends AbstractController
                     'id' => $sale->getId(),
                     'nomSalle' => $sale->getNomSalle(),
                     'numeroSalle' => $sale->getNumeroSalle(),
-
-                    'capaciteSalle' =>  $sale->getCapaciteSalle(),
+                    'niveauSalle' => $sale->getNiveauSalle(),
+                    'motif' => $sale->getReservations()->last()->getMotif(),
+                    'debut' => $sale->getReservations()->last()->getDebut(),
+                    'fin' => $sale->getReservations()->last()->getFin(),
+                    'capaciteSalle' =>  $sale->getCapaciteSalle(),   'batiment' => $sale->getBatiment()->getNomBatiment(),
                     'longitude' =>  $sale->getLongitude(),
                     'latitude' =>  $sale->getLatitude(),
                     'src' =>  'http' . '://' . $_SERVER['HTTP_HOST'] . '/images/salle/' . ($sale->getSrc() ?? 'default.jpg'),
@@ -362,6 +375,55 @@ class ActionController extends AbstractController
                     'data' =>
                     $lsale
 
+                ],
+                200
+            );
+        } catch (\Exception $e) {
+            // Une erreur s'est produite, annulez la transaction
+
+            return new JsonResponse([
+                'message' => 'Une erreur est survenue'
+            ], 203);
+        }
+    }
+    /**
+     * @Route("/homeinfos", name="homeInfos", methods={"GET"})
+     *  @param Request $request
+     * @return JsonResponse
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \Exception
+     * 
+     */
+    public function homeInfos(Request $request,)
+    {
+
+
+        try {
+
+
+            $lResCollections = $this->em->getRepository(Salle::class)->findBy(['etatSalle' => true]);
+            $lsaleCollections = $this->em->getRepository(Salle::class)->findAll();
+
+            $Batiment = $this->em->getRepository(Batiment::class)->findAll();
+            $lCollections = $this->em->getRepository(UserPlateform::class)->findAll();
+
+            return new JsonResponse(
+                [
+                    'data' =>     [
+                        'nbre_batiments' =>
+                        count($Batiment),
+                        'nbre_utilisateurs' =>
+                        count($lCollections),
+                        'nbre_salles' =>
+                        count($lsaleCollections),
+                        'nbre_reservations' =>
+                        count($lResCollections),
+
+                    ],
                 ],
                 200
             );

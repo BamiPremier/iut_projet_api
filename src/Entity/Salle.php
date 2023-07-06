@@ -19,7 +19,7 @@ class Salle
     #[ORM\Column(length: 255)]
     private ?string $nomSalle = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length:255, nullable: true)]
     private ?string $numeroSalle = null;
 
     #[ORM\Column]
@@ -45,6 +45,9 @@ class Salle
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $src = null;
+
+    #[ORM\Column(length:255, nullable: true)]
+    private ?string $niveauSalle = null;
 
     public function __construct()
     {
@@ -190,6 +193,18 @@ class Salle
     public function setSrc(string $src): self
     {
         $this->src = $src;
+
+        return $this;
+    }
+
+    public function getNiveauSalle(): ?string
+    {
+        return $this->niveauSalle;
+    }
+
+    public function setNiveauSalle(string $niveauSalle): self
+    {
+        $this->niveauSalle = $niveauSalle;
 
         return $this;
     }

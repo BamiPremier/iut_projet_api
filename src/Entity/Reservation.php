@@ -20,6 +20,15 @@ class Reservation
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     private ?Salle $sale = null;
 
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $debut = null;
+
+    #[ORM\Column(length:255, nullable: true)]
+    private ?string $fin = null;
+
+    #[ORM\Column(length:255, nullable: true)]
+    private ?string $motif = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +55,42 @@ class Reservation
     public function setSale(?Salle $sale): self
     {
         $this->sale = $sale;
+
+        return $this;
+    }
+
+    public function getDebut(): ?string
+    {
+        return $this->debut;
+    }
+
+    public function setDebut(string $debut): self
+    {
+        $this->debut = $debut;
+
+        return $this;
+    }
+
+    public function getFin(): ?string
+    {
+        return $this->fin;
+    }
+
+    public function setFin(string $fin): self
+    {
+        $this->fin = $fin;
+
+        return $this;
+    }
+
+    public function getMotif(): ?string
+    {
+        return $this->motif;
+    }
+
+    public function setMotif(string $motif): self
+    {
+        $this->motif = $motif;
 
         return $this;
     }
